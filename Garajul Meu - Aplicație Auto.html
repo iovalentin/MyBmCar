@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="ro" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Garajul Meu - Manager Auto</title>
+    
+    <!-- Meta tags pentru aspect de aplicație mobilă (PWA / Web App) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Garajul Meu">
+    <meta name="theme-color" content="#09090b">
+
+    <!-- Favicon SVG Integrat (Iconița aplicației) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2318181b'/%3E%3Crect x='4' y='4' width='92' height='92' rx='20' fill='none' stroke='%23f59e0b' stroke-width='4'/%3E%3Cpath d='M22 58 L28 38 C30 33 34 30 40 30 L60 30 C66 30 70 33 72 38 L78 58 Z' fill='%23f59e0b'/%3E%3Crect x='16' y='54' width='68' height='18' rx='6' fill='%23fbbf24'/%3E%3Ccircle cx='30' cy='72' r='8' fill='%2309090b' stroke='%23f59e0b' stroke-width='3'/%3E%3Ccircle cx='70' cy='72' r='8' fill='%2309090b' stroke='%23f59e0b' stroke-width='3'/%3E%3Cpath d='M24 59 H34 M66 59 H76' stroke='%23ffffff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" id="apple-touch-icon">
+
+    <!-- Tailwind CSS & Google Fonts (Inter) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        zinc: {
+                            850: '#1f1f23',
+                            925: '#111113',
+                            950: '#09090b',
+                        },
+                        amber: {
+                            450: '#f59e0b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Ascundere scrollbar pentru aspect nativ mobil */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        body {
+            background-color: #09090b;
+            color: #f4f4f5;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        input, select, textarea {
+            user-select: text;
+        }
+        /* Animații fluide pentru modale și tab-uri */
+        .fade-in {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+        .slide-up {
+            animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        /* Stil plăcuță înmatriculare RO */
+        .ro-plate {
+            background: linear-gradient(180deg, #ffffff 0%, #e4e4e7 100%);
+            color: #09090b;
+            border: 2px solid #27272a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex justify-center bg-black">
+
+    <!-- Container principal simulând un ecran de telefon pe desktop și 100% pe mobil -->
+    <div class="w-full max-w-md bg-zinc-950 min-h-screen flex flex-col relative shadow-2xl border-x border-zinc-900 pb-24">
+        
+        <!-- HEADER APLICAȚIE -->
+        <header class="sticky top-0 z-30 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80 px-4 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- Iconița / Logo-ul aplicației -->
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 p-0.5 shadow-lg shadow-amber-500/20 flex-shrink-0">
+                    <div class="w-full h-full bg-zinc-900 rounded-[10px] flex items-center justify-center">
+                        <svg class="w-6 h-6 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+                            <circle cx="7" cy="17" r="2"/>
+                            <path d="M9 17h6"/>
+                            <circle cx="17" cy="17" r="2"/>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base tracking-tight text-white leading-none">Garajul Meu</h1>
+                    <p class="text-[11px] text-amber-400 font-medium mt-1 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Asistent Auto Personal
+                    </p>
+                </div>
+            </div>
+
+            <!-- Buton Instalare / Iconiță pe ecranul telefonului -->
+            <button onclick="openInstallModal()" class="flex items-center gap-1.5 bg-zinc-900 hover:bg-zinc-800 active:scale-95 transition border border-zinc-800 text-zinc-200 px-3 py-2 rounded-xl text-xs font-semibold">
+                <i data-lucide="smartphone" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>Pune pe ecran</span>
+            </button>
+        </header>
+
+        <!-- TOAST NOTIFICATION (Înlocuiește alert) -->
+        <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-2 bg-zinc-800 border border-amber-500/40 text-white px-4 py-2.5 rounded-2xl shadow-2xl text-sm font-medium transition-all">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-400"></i>
+            <span id="toast-msg">Salvat!</span>
+        </div>
+
+        <!-- ==================== TAB 1: MAȘINA MEA (DASHBOARD) ==================== -->
+        <main id="tab-dashboard" class="flex-1 px-4 pt-4 space-y-5 fade-in">
+            
+            <!-- Card Principal Vehicul -->
+            <section class="bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-850 border border-zinc-800 rounded-3xl p-5 shadow-xl relative overflow-hidden">
+                <!-- Accent vizual fundal -->
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="flex justify-between items-start gap-2">
+                    <div>
+                        <span id="car-year-engine" class="inline-block text-xs font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-lg mb-1.5">
+                            2019 • 2.0 TDI 150 CP
+                        </span>
+                        <h2 id="car-model" class="text-xl font-extrabold text-white tracking-tight">
+                            Volkswagen Passat B8
+                        </h2>
+                    </div>
+                    <button onclick="openEditCarModal()" class="p-2.5 bg-zinc-800/90 hover:bg-zinc-700 active:scale-95 rounded-xl text-zinc-300 border border-zinc-700/60 transition" title="Editează datele mașinii">
+                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Plăcuță Înmatriculare & Serie Șasiu (VIN) -->
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <!-- Plăcuță RO -->
+                    <div class="ro-plate rounded-lg overflow-hidden flex items-center h-9 select-all">
+                        <div class="bg-blue-700 h-full w-5 flex flex-col items-center justify-between py-1 text-[7px] font-bold text-white">
+                            <span class="text-amber-300 leading-none">★</span>
+                            <span>RO</span>
+                        </div>
+                        <span id="car-plate" class="px-3 font-extrabold text-sm tracking-wider">AR 24 VLW</span>
+                    </div>
+
+                    <!-- Serie Șasiu (VIN) cu copiere -->
+                    <button onclick="copyVIN()" class="flex items-center gap-2 bg-zinc-950/80 hover:bg-zinc-950 active:scale-95 border border-zinc-800 px-3 py-2 rounded-xl text-xs text-zinc-300 transition">
+                        <span class="text-zinc-500 font-medium">VIN:</span>
+                        <span id="car-vin" class="font-mono font-semibold text-zinc-200 tracking-tight">WVWZZZ3CZKE048291</span>
+                        <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-400"></i>
+                    </button>
+                </div>
+
+                <!-- Odometru / Kilometraj -->
+                <div class="mt-5 pt-4 border-t border-zinc-800/80 flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] uppercase tracking-wider text-zinc-400 font-semibold">Kilometraj Actual</p>
+                        <div class="flex items-baseline gap-1.5 mt-0.5">
+                            <span id="car-km" class="text-2xl font-black text-white tracking-tight">164.500</span>
+                            <span class="text-xs font-bold text-amber-400">km</span>
+                        </div>
+                    </div>
+                    <button onclick="openUpdateKmModal()" class="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-bold text-xs px-4 py-3 rounded-2xl shadow-lg shadow-amber-500/20 transition">
+                        <i data-lucide="gauge" class="w-4 h-4"></i>
+                        <span>Actualizează km</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Rezumat Alerte Rapide -->
+            <div id="alerts-banner" class="hidden bg-red-500/10 border border-red-500/30 rounded-2xl p-3.5 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0 text-red-400">
+                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                </div>
+                <div class="text-xs">
+                    <p class="font-bold text-red-300" id="alerts-banner-title">Atenție la documente!</p>
+                    <p class="text-red-200/80 mt-0.5" id="alerts-banner-desc">Ai documente expirate sau care expiră în curând.</p>
+                </div>
+            </div>
+
+            <!-- Secțiune Documente, Asigurări și Taxe -->
+            <section class="space-y-3">
+                <div class="flex items-center justify-between px-1">
+                    <h3 class="text-sm font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
+                        Acte, Asigurări & Taxe
+                    </h3>
+                    <span class="text-[11px] text-zinc-500">Apasă pentru editare</span>
+                </div>
+
+                <!-- Lista cardurilor de documente (generată dinamic din JS) -->
+                <div id="documents-list" class="space-y-3"></div>
+            </section>
+
+        </main>
+
+        <!-- ==================== TAB 2: REVIZII & MENTENANȚĂ ==================== -->
+        <main id="tab-service" class="hidden flex-1 px-4 pt-4 space-y-5 fade-in">
+            
+            <!-- Header Secțiune Revizii -->
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-extrabold text-white">Jurnal Revizii</h2>
+                    <p class="text-xs text-zinc-400 mt-0.5">Monitorizare schimburi & uzură piese</p>
+                </div>
+                <button onclick="openAddServiceModal()" class="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-bold text-xs px-4 py-3 rounded-2xl shadow-lg shadow-amber-500/20 transition">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Adaugă revizie</span>
+                </button>
+            </div>
+
+            <!-- Card Statistici Costuri -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5">
+                    <p class="text-[11px] text-zinc-400 font-medium">Total investiții service</p>
+                    <p id="total-service-cost" class="text-lg font-extrabold text-white mt-1">0 RON</p>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5">
+                    <p class="text-[11px] text-zinc-400 font-medium">Intervenții înregistrate</p>
+                    <p id="total-service-count" class="text-lg font-extrabold text-amber-400 mt-1">0</p>
+                </div>
+            </div>
+
+            <!-- Lista Reviziilor -->
+            <div id="service-list" class="space-y-3 pb-4"></div>
+
+        </main>
+
+        <!-- ==================== TAB 3: SETĂRI & BACKUP ==================== -->
+        <main id="tab-settings" class="hidden flex-1 px-4 pt-4 space-y-5 fade-in">
+            <div>
+                <h2 class="text-xl font-extrabold text-white">Setări & Siguranță Date</h2>
+                <p class="text-xs text-zinc-400 mt-0.5">Datele sunt salvate 100% privat pe dispozitivul tău</p>
+            </div>
+
+            <!-- Card Configurare CASCO -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
+                        <i data-lucide="shield" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">Asigurare CASCO</p>
+                        <p class="text-xs text-zinc-400">Afișează cardul CASCO pe ecranul principal</p>
+                    </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-casco" onchange="toggleCasco(this.checked)" class="sr-only peer">
+                    <div class="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                </label>
+            </div>
+
+            <!-- Export / Import Backup -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <i data-lucide="database" class="w-4 h-4 text-amber-400"></i>
+                    Copie de rezervă (Backup)
+                </h3>
+                <p class="text-xs text-zinc-400 leading-relaxed">
+                    Descarcă toate datele mașinii (acte, kilometraj, istoric revizii) într-un fișier pe telefon sau restaurează dintr-un fișier salvat anterior.
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button onclick="exportData()" class="flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-white text-xs font-semibold py-3 px-3 rounded-xl border border-zinc-700 transition">
+                        <i data-lucide="download" class="w-4 h-4 text-amber-400"></i>
+                        <span>Exportă JSON</span>
+                    </button>
+                    <label class="flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-white text-xs font-semibold py-3 px-3 rounded-xl border border-zinc-700 transition cursor-pointer">
+                        <i data-lucide="upload" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Importă JSON</span>
+                        <input type="file" accept=".json" onchange="importData(event)" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Instrucțiuni Instalare ca Aplicație -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-2.5">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <i data-lucide="smartphone" class="w-4 h-4 text-amber-400"></i>
+                    Cum adaugi iconița pe ecranul telefonului?
+                </h3>
+                <div class="text-xs text-zinc-300 space-y-2">
+                    <p><strong class="text-amber-400">iPhone (Safari):</strong> Apasă pe butonul <span class="bg-zinc-800 px-1.5 py-0.5 rounded">Share (Partajare)</span> de jos → alege <span class="bg-zinc-800 px-1.5 py-0.5 rounded">Add to Home Screen</span>.</p>
+                    <p><strong class="text-amber-400">Android (Chrome):</strong> Apasă pe cele <span class="bg-zinc-800 px-1.5 py-0.5 rounded">3 puncte (⋮)</span> din dreapta sus → alege <span class="bg-zinc-800 px-1.5 py-0.5 rounded">Adaugă pe ecranul de pornire</span>.</p>
+                </div>
+            </div>
+
+            <!-- Resetare date -->
+            <div class="pt-2">
+                <button onclick="openResetConfirmModal()" class="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 border border-red-500/20 text-xs font-bold py-3.5 rounded-2xl transition">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    <span>Resetează la datele inițiale</span>
+                </button>
+            </div>
+        </main>
+
+        <!-- ==================== BOTTOM TAB BAR (NAVIGAȚIE MOBIL) ==================== -->
+        <nav class="fixed bottom-0 w-full max-w-md bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800/90 px-4 py-2 flex justify-around items-center z-30">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn flex flex-col items-center justify-center py-1.5 px-4 rounded-2xl text-amber-400 transition">
+                <i data-lucide="car-front" class="w-6 h-6"></i>
+                <span class="text-[11px] font-bold mt-1">Mașina Mea</span>
+            </button>
+            <button onclick="switchTab('service')" id="nav-service" class="nav-btn flex flex-col items-center justify-center py-1.5 px-4 rounded-2xl text-zinc-500 hover:text-zinc-300 transition">
+                <i data-lucide="wrench" class="w-6 h-6"></i>
+                <span class="text-[11px] font-semibold mt-1">Revizii</span>
+            </button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center justify-center py-1.5 px-4 rounded-2xl text-zinc-500 hover:text-zinc-300 transition">
+                <i data-lucide="sliders-horizontal" class="w-6 h-6"></i>
+                <span class="text-[11px] font-semibold mt-1">Setări</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- ==================== MODALE INTERACTIVE (BOTTOM SHEETS) ==================== -->
+
+    <!-- 1. Modal Actualizare Kilometraj -->
+    <div id="modal-km" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center">
+        <div class="bg-zinc-900 border-t sm:border border-zinc-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 slide-up">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-extrabold text-white">Actualizează Kilometraj</h3>
+                <button onclick="closeModals()" class="p-2 bg-zinc-800 rounded-full text-zinc-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form onsubmit="saveKm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1.5">Kilometraj actual (km)</label>
+                    <input type="number" id="input-km" required min="0" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-2xl px-4 py-3.5 text-xl font-extrabold text-white outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="addQuickKm(100)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold py-2.5 rounded-xl text-amber-400">+100 km</button>
+                    <button type="button" onclick="addQuickKm(500)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold py-2.5 rounded-xl text-amber-400">+500 km</button>
+                    <button type="button" onclick="addQuickKm(1000)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold py-2.5 rounded-xl text-amber-400">+1.000 km</button>
+                </div>
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-zinc-950 font-extrabold py-3.5 rounded-2xl text-sm shadow-lg shadow-amber-500/20">
+                    Salvează Kilometrajul
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Modal Editare Date Mașină -->
+    <div id="modal-car" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center">
+        <div class="bg-zinc-900 border-t sm:border border-zinc-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 slide-up max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-extrabold text-white">Datele Mașinii Mele</h3>
+                <button onclick="closeModals()" class="p-2 bg-zinc-800 rounded-full text-zinc-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form onsubmit="saveCarDetails(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Marcă & Model</label>
+                    <input type="text" id="edit-model" required placeholder="ex: Dacia Duster / BMW X3" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 mb-1">An fabricație</label>
+                        <input type="number" id="edit-year" required placeholder="2020" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 mb-1">Nr. Înmatriculare</label>
+                        <input type="text" id="edit-plate" required placeholder="B 123 ABC" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white uppercase outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Motorizare & Putere</label>
+                    <input type="text" id="edit-engine" required placeholder="ex: 1.5 dCi 115 CP / 2.0 Benzină" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Serie Șasiu (VIN)</label>
+                    <input type="text" id="edit-vin" required maxlength="17" placeholder="17 caractere" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm font-mono uppercase text-white outline-none">
+                </div>
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-zinc-950 font-extrabold py-3.5 rounded-2xl text-sm mt-2">
+                    Salvează Modificările
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Modal Editare Document (RCA, CASCO, ITP, Rovinietă, Impozit) -->
+    <div id="modal-doc" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center">
+        <div class="bg-zinc-900 border-t sm:border border-zinc-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 slide-up">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-doc-title" class="text-lg font-extrabold text-white">Editează Document</h3>
+                <button onclick="closeModals()" class="p-2 bg-zinc-800 rounded-full text-zinc-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form onsubmit="saveDocDetails(event)" class="space-y-4">
+                <input type="hidden" id="edit-doc-id">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Data Expirării / Scadenței</label>
+                    <input type="date" id="edit-doc-date" required class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                </div>
+                <div>
+                    <label id="edit-doc-provider-label" class="block text-xs font-semibold text-zinc-400 mb-1">Detalii / Furnizor (ex: Allianz, Stație ITP)</label>
+                    <input type="text" id="edit-doc-provider" placeholder="Opțional" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                </div>
+                <div>
+                    <label id="edit-doc-notes-label" class="block text-xs font-semibold text-zinc-400 mb-1">Nr. Poliță / Observații / Cost</label>
+                    <input type="text" id="edit-doc-notes" placeholder="ex: Poliță nr. 123456 / 850 RON" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                </div>
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-zinc-950 font-extrabold py-3.5 rounded-2xl text-sm">
+                    Actualizează Documentul
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. Modal Adăugare Revizie -->
+    <div id="modal-service" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center">
+        <div class="bg-zinc-900 border-t sm:border border-zinc-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 slide-up max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-extrabold text-white">Adaugă Revizie / Piesă</h3>
+                <button onclick="closeModals()" class="p-2 bg-zinc-800 rounded-full text-zinc-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form onsubmit="saveServiceEntry(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Tip intervenție</label>
+                    <select id="srv-type" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                        <option value="Schimb Ulei & Filtre">🛢️ Schimb Ulei & Filtre</option>
+                        <option value="Plăcuțe / Discuri Frână">🛑 Plăcuțe / Discuri Frână</option>
+                        <option value="Distribuție & Pompă Apă">⚙️ Kit Distribuție</option>
+                        <option value="Anvelope / Geometrie">🛞 Anvelope / Geometrie</option>
+                        <option value="Baterie Auto">🔋 Baterie Auto</option>
+                        <option value="Alte Reparații / Consumabile">🔧 Alte Reparații</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 mb-1">Data efectuării</label>
+                        <input type="date" id="srv-date" required class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 mb-1">Kilometraj la schimb</label>
+                        <input type="number" id="srv-km" required class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 mb-1">Interval următor (km)</label>
+                        <input type="number" id="srv-interval" value="10000" step="1000" placeholder="ex: 10000" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-400 mb-1">Cost total (RON)</label>
+                        <input type="number" id="srv-cost" required placeholder="ex: 650" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-400 mb-1">Detalii piese / Service (opțional)</label>
+                    <input type="text" id="srv-notes" placeholder="ex: Ulei Castrol 5W30 + Filtre Mann" class="w-full bg-zinc-950 border border-zinc-700 focus:border-amber-400 rounded-xl px-3.5 py-3 text-sm text-white outline-none">
+                </div>
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-zinc-950 font-extrabold py-3.5 rounded-2xl text-sm mt-2">
+                    Salvează în Jurnal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 5. Modal Instrucțiuni Instalare Iconiță pe Telefon -->
+    <div id="modal-install" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center">
+        <div class="bg-zinc-900 border-t sm:border border-zinc-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 slide-up">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400">
+                        <i data-lucide="smartphone" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-white">Instalează pe Telefon</h3>
+                </div>
+                <button onclick="closeModals()" class="p-2 bg-zinc-800 rounded-full text-zinc-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <p class="text-xs text-zinc-400 mb-4 leading-relaxed">
+                Poți avea această aplicație direct pe ecranul principal al telefonului tău, cu propria ei iconiță, fără să o descarci din magazin:
+            </p>
+            <div class="space-y-3 text-xs">
+                <div class="bg-zinc-950 border border-zinc-800 p-3.5 rounded-2xl">
+                    <p class="font-bold text-amber-400 mb-1">🍏 Pe iPhone (Safari)</p>
+                    <p class="text-zinc-300">1. Apasă pe iconița <strong>Share</strong> (pătratul cu săgeată în sus) din bara de jos.<br>2. Derulează și apasă pe <strong>„Add to Home Screen”</strong> (Adaugă pe ecranul principal).</p>
+                </div>
+                <div class="bg-zinc-950 border border-zinc-800 p-3.5 rounded-2xl">
+                    <p class="font-bold text-emerald-400 mb-1">🤖 Pe Android (Chrome)</p>
+                    <p class="text-zinc-300">1. Apasă pe meniul <strong>⋮</strong> din colțul din dreapta sus.<br>2. Selectează <strong>„Adaugă pe ecranul de pornire”</strong> sau <strong>„Instalează aplicația”</strong>.</p>
+                </div>
+            </div>
+            <button onclick="closeModals()" class="w-full mt-5 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 rounded-2xl text-xs">
+                Am înțeles
+            </button>
+        </div>
+    </div>
+
+    <!-- 6. Modal Confirmare Resetare -->
+    <div id="modal-reset" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-3xl p-6 fade-in">
+            <h3 class="text-lg font-extrabold text-white">Resetezi toate datele?</h3>
+            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">
+                Toate modificările făcute vor fi șterse și înlocuite cu datele demonstrative inițiale. Recomandăm să faci un export JSON înainte.
+            </p>
+            <div class="grid grid-cols-2 gap-3 mt-5">
+                <button onclick="closeModals()" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 rounded-xl text-xs">Anulează</button>
+                <button onclick="confirmReset()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-xs">Da, resetează</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGICĂ APLICAȚIE -->
+    <script>
+        // Funcție utilitară pentru a genera date relative față de ziua de azi (pentru demo realist)
+        function getRelativeDate(daysOffset) {
+            const d = new Date();
+            d.setDate(d.getDate() + daysOffset);
+            return d.toISOString().split('T')[0];
+        }
+
+        // Datele implicite (pre-populate la prima deschidere)
+        const DEFAULT_DATA = {
+            car: {
+                model: "Volkswagen Passat B8",
+                year: "2019",
+                engine: "2.0 TDI 150 CP",
+                plate: "AR 24 VLW",
+                vin: "WVWZZZ3CZKE048291",
+                km: 164500
+            },
+            showCasco: true,
+            documents: [
+                {
+                    id: "rca",
+                    title: "Asigurare RCA",
+                    icon: "shield-alert",
+                    expiryDate: getRelativeDate(142), // Valabil
+                    provider: "Allianz-Țiriac",
+                    notes: "Poliță RO/24/991827 • 1.150 RON"
+                },
+                {
+                    id: "itp",
+                    title: "Inspecție Tehnică (ITP)",
+                    icon: "clipboard-check",
+                    expiryDate: getRelativeDate(18), // Expiră în curând (galben)
+                    provider: "Stație ITP AutoTest",
+                    notes: "Valabilitate 1 an"
+                },
+                {
+                    id: "rovinieta",
+                    title: "Rovinietă (Taxă Drum)",
+                    icon: "road",
+                    expiryDate: getRelativeDate(85), // Valabil
+                    provider: "CNAIR România",
+                    notes: "Categorie A • 12 luni"
+                },
+                {
+                    id: "casco",
+                    title: "Asigurare CASCO",
+                    icon: "shield-check",
+                    expiryDate: getRelativeDate(210),
+                    provider: "Groupama Asigurări",
+                    notes: "Franșiză 0 • Asistență rutieră inclusă"
+                },
+                {
+                    id: "impozit",
+                    title: "Impozit Auto Anual",
+                    icon: "landmark",
+                    expiryDate: getRelativeDate(124),
+                    provider: "Primărie / Ghișeul.ro",
+                    notes: "Motor 1968 cmc • ~240 RON"
+                }
+            ],
+            services: [
+                {
+                    id: 1,
+                    type: "Schimb Ulei & Filtre",
+                    date: getRelativeDate(-110),
+                    km: 158200,
+                    interval: 10000,
+                    cost: 680,
+                    notes: "Ulei Liqui Moly 5W30 + Filtre Mann"
+                },
+                {
+                    id: 2,
+                    type: "Plăcuțe / Discuri Frână",
+                    date: getRelativeDate(-260),
+                    km: 149000,
+                    interval: 35000,
+                    cost: 950,
+                    notes: "Plăcuțe frână față + spate ATE"
+                }
+            ]
+        };
+
+        const STORAGE_KEY = "garajul_meu_app_data_v1";
+        let appData = loadData();
+
+        // Încărcare date din localStorage
+        function loadData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error("Eroare la citirea datelor:", e);
+            }
+            return JSON.parse(JSON.stringify(DEFAULT_DATA));
+        }
+
+        // Salvare date în localStorage
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            } catch (e) {
+                console.error("Eroare la salvarea datelor:", e);
+            }
+        }
+
+        // Generare Apple Touch Icon PNG dinamic din SVG pentru iPhone
+        function generateAppleIcon() {
+            const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 100 100'><rect width='100' height='100' fill='#18181b'/><path d='M22 58 L28 38 C30 33 34 30 40 30 L60 30 C66 30 70 33 72 38 L78 58 Z' fill='#f59e0b'/><rect x='16' y='54' width='68' height='18' rx='6' fill='#fbbf24'/><circle cx='30' cy='72' r='8' fill='#09090b' stroke='#f59e0b' stroke-width='3'/><circle cx='70' cy='72' r='8' fill='#09090b' stroke='#f59e0b' stroke-width='3'/></svg>`;
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 180;
+                canvas.height = 180;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                document.getElementById('apple-touch-icon').href = canvas.toDataURL('image/png');
+            };
+            img.src = 'data:image/svg+xml;base64,' + btoa(svg);
+        }
+
+        // Calcul zile rămase până la expirare
+        function getDaysRemaining(dateString) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const target = new Date(dateString);
+            target.setHours(0, 0, 0, 0);
+            const diffTime = target - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        // Formatare dată în format românesc (DD.MM.YYYY)
+        function formatDateRO(dateString) {
+            if (!dateString) return "-";
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return dateString;
+            return `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+
+        // Formatare numere cu punct (ex: 164.500)
+        function formatNumber(num) {
+            return Number(num).toLocaleString('ro-RO');
+        }
+
+        // Randare completă a interfeței
+        function renderApp() {
+            // 1. Date Mașină
+            document.getElementById('car-model').textContent = appData.car.model;
+            document.getElementById('car-year-engine').textContent = `${appData.car.year} • ${appData.car.engine}`;
+            document.getElementById('car-plate').textContent = appData.car.plate;
+            document.getElementById('car-vin').textContent = appData.car.vin;
+            document.getElementById('car-km').textContent = formatNumber(appData.car.km);
+
+            // Toggle CASCO în setări
+            document.getElementById('toggle-casco').checked = appData.showCasco;
+
+            // 2. Randare Documente & Alerte
+            const docsContainer = document.getElementById('documents-list');
+            docsContainer.innerHTML = '';
+
+            let urgentAlerts = 0;
+
+            appData.documents.forEach(doc => {
+                if (doc.id === 'casco' && !appData.showCasco) return;
+
+                const days = getDaysRemaining(doc.expiryDate);
+                let statusBadge = '';
+                let borderClass = 'border-zinc-800';
+                let iconBg = 'bg-emerald-500/10 text-emerald-400';
+
+                if (days < 0) {
+                    urgentAlerts++;
+                    borderClass = 'border-red-500/50';
+                    iconBg = 'bg-red-500/15 text-red-400';
+                    statusBadge = `<span class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-red-500/20 text-red-400 border border-red-500/30">Expirat de ${Math.abs(days)} zile</span>`;
+                } else if (days === 0) {
+                    urgentAlerts++;
+                    borderClass = 'border-red-500/50';
+                    iconBg = 'bg-red-500/15 text-red-400';
+                    statusBadge = `<span class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-red-500/20 text-red-400 border border-red-500/30">Expiră AZI!</span>`;
+                } else if (days <= 30) {
+                    urgentAlerts++;
+                    borderClass = 'border-amber-500/40';
+                    iconBg = 'bg-amber-500/15 text-amber-400';
+                    statusBadge = `<span class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/30">Expiră în ${days} zile</span>`;
+                } else {
+                    statusBadge = `<span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">${days} zile rămase</span>`;
+                }
+
+                const card = document.createElement('div');
+                card.onclick = () => openEditDocModal(doc.id);
+                card.className = `bg-zinc-900 hover:bg-zinc-850 active:scale-[0.99] transition border ${borderClass} rounded-2xl p-4 cursor-pointer flex items-center justify-between gap-3`;
+                card.innerHTML = `
+                    <div class="flex items-center gap-3.5 min-w-0">
+                        <div class="w-11 h-11 rounded-2xl ${iconBg} flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="${doc.icon}" class="w-5 h-5"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="text-sm font-bold text-white truncate">${doc.title}</h4>
+                            <p class="text-xs text-zinc-400 mt-0.5 truncate">${doc.provider || 'Fără detalii'} • <span class="text-zinc-300 font-medium">${formatDateRO(doc.expiryDate)}</span></p>
+                            ${doc.notes ? `<p class="text-[11px] text-zinc-500 mt-0.5 truncate">${doc.notes}</p>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end flex-shrink-0 gap-1.5">
+                        ${statusBadge}
+                        <span class="text-[10px] text-zinc-500 flex items-center gap-0.5">Editează <i data-lucide="chevron-right" class="w-3 h-3"></i></span>
+                    </div>
+                `;
+                docsContainer.appendChild(card);
+            });
+
+            // Banner alerte
+            const banner = document.getElementById('alerts-banner');
+            if (urgentAlerts > 0) {
+                banner.classList.remove('hidden');
+                document.getElementById('alerts-banner-desc').textContent = 
+                    urgentAlerts === 1 
+                    ? "Ai 1 document care a expirat sau expiră în mai puțin de 30 de zile." 
+                    : `Ai ${urgentAlerts} documente care au expirat sau expiră în mai puțin de 30 de zile.`;
+            } else {
+                banner.classList.add('hidden');
+            }
+
+            // 3. Randare Revizii
+            renderServices();
+
+            // Re-inițializare iconițe Lucide
+            lucide.createIcons();
+        }
+
+        function renderServices() {
+            const list = document.getElementById('service-list');
+            list.innerHTML = '';
+
+            let totalCost = 0;
+            appData.services.forEach(s => totalCost += Number(s.cost || 0));
+
+            document.getElementById('total-service-cost').textContent = `${formatNumber(totalCost)} RON`;
+            document.getElementById('total-service-count').textContent = appData.services.length;
+
+            if (appData.services.length === 0) {
+                list.innerHTML = `
+                    <div class="bg-zinc-900/60 border border-dashed border-zinc-800 rounded-3xl p-8 text-center">
+                        <i data-lucide="wrench" class="w-8 h-8 text-zinc-600 mx-auto mb-2"></i>
+                        <p class="text-sm font-bold text-zinc-300">Nicio revizie înregistrată</p>
+                        <p class="text-xs text-zinc-500 mt-1">Apasă pe „Adaugă revizie” pentru a ține evidența schimburilor de ulei și piese.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sortare descrescătoare după kilometraj
+            const sorted = [...appData.services].sort((a, b) => b.km - a.km);
+
+            sorted.forEach(srv => {
+                const kmDrivenSince = Math.max(0, appData.car.km - srv.km);
+                const interval = Number(srv.interval) || 10000;
+                const kmLeft = interval - kmDrivenSince;
+                const percent = Math.min(100, Math.round((kmDrivenSince / interval) * 100));
+
+                let barColor = 'bg-emerald-500';
+                let statusText = `Mai ai ${formatNumber(kmLeft)} km`;
+                let statusTextColor = 'text-emerald-400';
+
+                if (kmLeft <= 0) {
+                    barColor = 'bg-red-500';
+                    statusText = `Depășit cu ${formatNumber(Math.abs(kmLeft))} km!`;
+                    statusTextColor = 'text-red-400';
+                } else if (kmLeft <= 1500) {
+                    barColor = 'bg-amber-400';
+                    statusText = `Urmează în ${formatNumber(kmLeft)} km`;
+                    statusTextColor = 'text-amber-400';
+                }
+
+                const item = document.createElement('div');
+                item.className = "bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3";
+                item.innerHTML = `
+                    <div class="flex justify-between items-start gap-2">
+                        <div>
+                            <h4 class="text-sm font-bold text-white">${srv.type}</h4>
+                            <p class="text-xs text-zinc-400 mt-0.5">${formatDateRO(srv.date)} • la <strong class="text-zinc-200">${formatNumber(srv.km)} km</strong></p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-zinc-800 text-amber-400 text-xs font-extrabold px-2.5 py-1 rounded-lg">${formatNumber(srv.cost)} RON</span>
+                            <button onclick="deleteService(${srv.id})" class="p-1.5 text-zinc-500 hover:text-red-400 transition" title="Șterge">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${srv.notes ? `<p class="text-xs text-zinc-400 bg-zinc-950/70 px-3 py-2 rounded-xl border border-zinc-800/80">${srv.notes}</p>` : ''}
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-[11px] font-semibold">
+                            <span class="text-zinc-400">Parcurși: ${formatNumber(kmDrivenSince)} / ${formatNumber(interval)} km</span>
+                            <span class="${statusTextColor}">${statusText}</span>
+                        </div>
+                        <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                            <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Navigare Tab-uri
+        function switchTab(tabName) {
+            ['dashboard', 'service', 'settings'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${t}`);
+                btn.classList.remove('text-amber-400');
+                btn.classList.add('text-zinc-500');
+            });
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabName}`);
+            activeBtn.classList.remove('text-zinc-500');
+            activeBtn.classList.add('text-amber-400');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 2600);
+        }
+
+        // Copiere Serie Șasiu (VIN)
+        function copyVIN() {
+            const vinText = appData.car.vin;
+            const tempInput = document.createElement("input");
+            tempInput.value = vinText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showToast("Serie șasiu (VIN) copiată!");
+        }
+
+        // Gestionare Modale
+        function closeModals() {
+            document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
+        }
+
+        function openInstallModal() {
+            document.getElementById('modal-install').classList.remove('hidden');
+        }
+
+        // Modal Kilometraj
+        function openUpdateKmModal() {
+            document.getElementById('input-km').value = appData.car.km;
+            document.getElementById('modal-km').classList.remove('hidden');
+        }
+
+        function addQuickKm(amount) {
+            const input = document.getElementById('input-km');
+            input.value = Number(input.value || 0) + amount;
+        }
+
+        function saveKm(e) {
+            e.preventDefault();
+            const newKm = Number(document.getElementById('input-km').value);
+            if (newKm >= 0) {
+                appData.car.km = newKm;
+                saveData();
+                renderApp();
+                closeModals();
+                showToast("Kilometraj actualizat!");
+            }
+        }
+
+        // Modal Editare Mașină
+        function openEditCarModal() {
+            document.getElementById('edit-model').value = appData.car.model;
+            document.getElementById('edit-year').value = appData.car.year;
+            document.getElementById('edit-plate').value = appData.car.plate;
+            document.getElementById('edit-engine').value = appData.car.engine;
+            document.getElementById('edit-vin').value = appData.car.vin;
+            document.getElementById('modal-car').classList.remove('hidden');
+        }
+
+        function saveCarDetails(e) {
+            e.preventDefault();
+            appData.car.model = document.getElementById('edit-model').value.trim();
+            appData.car.year = document.getElementById('edit-year').value.trim();
+            appData.car.plate = document.getElementById('edit-plate').value.trim().toUpperCase();
+            appData.car.engine = document.getElementById('edit-engine').value.trim();
+            appData.car.vin = document.getElementById('edit-vin').value.trim().toUpperCase();
+            saveData();
+            renderApp();
+            closeModals();
+            showToast("Datele mașinii au fost salvate!");
+        }
+
+        // Modal Editare Document
+        function openEditDocModal(docId) {
+            const doc = appData.documents.find(d => d.id === docId);
+            if (!doc) return;
+            document.getElementById('modal-doc-title').textContent = `Editează ${doc.title}`;
+            document.getElementById('edit-doc-id').value = doc.id;
+            document.getElementById('edit-doc-date').value = doc.expiryDate;
+            document.getElementById('edit-doc-provider').value = doc.provider || '';
+            document.getElementById('edit-doc-notes').value = doc.notes || '';
+            document.getElementById('modal-doc').classList.remove('hidden');
+        }
+
+        function saveDocDetails(e) {
+            e.preventDefault();
+            const docId = document.getElementById('edit-doc-id').value;
+            const doc = appData.documents.find(d => d.id === docId);
+            if (doc) {
+                doc.expiryDate = document.getElementById('edit-doc-date').value;
+                doc.provider = document.getElementById('edit-doc-provider').value.trim();
+                doc.notes = document.getElementById('edit-doc-notes').value.trim();
+                saveData();
+                renderApp();
+                closeModals();
+                showToast(`${doc.title} actualizat!`);
+            }
+        }
+
+        // Modal Adăugare Revizie
+        function openAddServiceModal() {
+            document.getElementById('srv-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('srv-km').value = appData.car.km;
+            document.getElementById('srv-cost').value = '';
+            document.getElementById('srv-notes').value = '';
+            document.getElementById('modal-service').classList.remove('hidden');
+        }
+
+        function saveServiceEntry(e) {
+            e.preventDefault();
+            const newEntry = {
+                id: Date.now(),
+                type: document.getElementById('srv-type').value,
+                date: document.getElementById('srv-date').value,
+                km: Number(document.getElementById('srv-km').value),
+                interval: Number(document.getElementById('srv-interval').value) || 10000,
+                cost: Number(document.getElementById('srv-cost').value) || 0,
+                notes: document.getElementById('srv-notes').value.trim()
+            };
+            appData.services.unshift(newEntry);
+            
+            // Dacă kilometrajul introdus la revizie e mai mare decât cel curent, îl actualizăm automat
+            if (newEntry.km > appData.car.km) {
+                appData.car.km = newEntry.km;
+            }
+
+            saveData();
+            renderApp();
+            closeModals();
+            showToast("Revizie adăugată în jurnal!");
+        }
+
+        function deleteService(id) {
+            appData.services = appData.services.filter(s => s.id !== id);
+            saveData();
+            renderApp();
+            showToast("Intrarea a fost ștearsă.");
+        }
+
+        // Setări & Backup
+        function toggleCasco(enabled) {
+            appData.showCasco = enabled;
+            saveData();
+            renderApp();
+            showToast(enabled ? "Card CASCO activat" : "Card CASCO ascuns");
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `Garajul_Meu_${appData.car.plate.replace(/\s+/g, '_')}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("Fișier backup descărcat!");
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported && imported.car && imported.documents) {
+                        appData = imported;
+                        saveData();
+                        renderApp();
+                        showToast("Date restaurate cu succes!");
+                    } else {
+                        showToast("Fișier invalid!");
+                    }
+                } catch (err) {
+                    showToast("Eroare la citirea fișierului!");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function openResetConfirmModal() {
+            document.getElementById('modal-reset').classList.remove('hidden');
+        }
+
+        function confirmReset() {
+            appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            saveData();
+            renderApp();
+            closeModals();
+            showToast("Aplicația a fost resetată!");
+        }
+
+        // Inițializare la încărcare
+        window.onload = function() {
+            generateAppleIcon();
+            renderApp();
+        };
+    </script>
+</body>
+</html>
